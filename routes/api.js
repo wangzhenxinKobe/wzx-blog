@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-
+var Model = require('../models/User');
+console.log(Model);
 // 统一返回格式
 var responseData;
 
@@ -49,8 +50,30 @@ router.post('/user/register', function(req, res, next) {
         res.json(responseData);
         return;
     };
-    responseData.message = '注册成功';
-    res.json(responseData);
+    //用户名是否已经被注册了，如果数据库中已经存在和我们要注册的用户名同名的数据，表示该用户名已经被注册了
+    Model.findOne({
+        username: username,
+        password: password
+    }).then(function( userInfo ) {
+        if ( userInfo ) {
+            //表示数据库中有该记录
+            responseData.code = 4;
+            responseData.message = '用户名已经被注册了';
+            res.json(responseData);
+            return;
+        }
+        //保存用户注册的信息到数据库中
+        var user = new Model({
+            username: username,
+            password: password
+        });
+        return user.save();
+    }).then(function(newUserInfo) {
+        responseData.message = '注册成功';
+        res.json(responseData);
+    });
+
+
 });
 
 module.exports =  router;

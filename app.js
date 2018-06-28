@@ -3,17 +3,10 @@ var express = require('express');
 
 // 加载模板模块处理
 var swig = require('swig');
-// 加载数据库模块
-var mongoose = require('mongoose');
+
 //加载body-parser,用来处理POST请求
 var bodyParser = require('body-parser');
-mongoose.connect('mongodb://localhost:27017/wzxblog',function(err){
-  if(!err){
-    console.log("数据库连接成功")
-  }else{
-    console.log("数据库连接失败")
-  }
-});
+
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -35,7 +28,7 @@ swig.setDefaults({cache: false});
 app.use(logger('dev'));
 app.use(express.json());
 //bodyparser配置
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 //静态文件的处理
 app.use('/public',express.static(__dirname+'/public'));
@@ -46,18 +39,18 @@ app.use('/api', require('./routes/api'));
 app.use('/', require('./routes/main'));
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+    next(createError(404));
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;
