@@ -1,27 +1,49 @@
 var createError = require('http-errors');
 var express = require('express');
+
+// 加载模板模块处理
+var swig = require('swig');
+// 加载数据库模块
+var mongoose = require('mongoose');
+//加载body-parser,用来处理POST请求
+var bodyParser = require('body-parser');
+mongoose.connect('mongodb://localhost:27017/wzxblog',function(err){
+  if(!err){
+    console.log("数据库连接成功")
+  }else{
+    console.log("数据库连接失败")
+  }
+});
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// 定义模板引擎
+app.engine('html', swig.renderFile);
+// 设置模板文件存放的目录
+app.set('views', 'views');
+//注册使用的模板引擎
+app.set('view engine', 'html');
+
+// 消除缓存
+swig.setDefaults({cache: false});
+
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+//bodyparser配置
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+//静态文件的处理
+app.use('/public',express.static(__dirname+'/public'));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
+// 根据不同的功能划分模块
+app.use('/admin', require('./routes/admin'));
+app.use('/api', require('./routes/api'));
+app.use('/', require('./routes/main'));
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

@@ -1,0 +1,19 @@
+#db 数据库存储目录
+#models 数据库模型文件目录
+#schemas 数据库结构文件目录
+
+#模块划分
+前台模块
+后台管理模块
+API模块
+使用app.use()进行模块划分
+
+#main模块
+/ 首页
+/view 内容
+#api模块
+/ 首页
+/register 注册
+/login   登录
+/comment 评论
+/comment/post 评论提交
