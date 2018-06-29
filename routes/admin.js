@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Model = require('../models/User');
+var Category = require('../models/Category');
 router.use(function(req, res, next) {
     if (!req.userInfo.isAdmin) {
         //如果当前用户是非管理员
@@ -63,6 +64,32 @@ router.get('/user', function(req, res) {
     })
 
 
+});
+
+
+/*
+* 分类首页
+* */
+router.get('/category', function(req, res) {
+    res.render('admin/category_index', {
+        userInfo: req.userInfo
+    })
+});
+
+/*
+* 分类的添加
+* */
+router.get('/category/add', function(req, res) {
+    res.render('admin/category_add', {
+        userInfo: req.userInfo
+    });
+});
+
+/*
+* 分类的保存
+* */
+router.post('/category/add', function(req, res) {
+    console.log(req.body)
 });
 
 module.exports =  router;
