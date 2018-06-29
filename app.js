@@ -6,7 +6,8 @@ var swig = require('swig');
 
 //加载body-parser,用来处理POST请求
 var bodyParser = require('body-parser');
-
+//加载cookie
+var Cookies = require('cookies')
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -29,6 +30,19 @@ app.use(logger('dev'));
 app.use(express.json());
 //bodyparser配置
 app.use(bodyParser.urlencoded({ extended: true }));
+//cookies设置
+app.use(function(req, res, next) {
+    req.cookies = new Cookies(req, res);
+    //解析登录用户的cookie信息
+    req.userInfo = {};
+    if(req.cookies.get('userInfo')){
+        try{
+            req.userInfo = JSON.parse(req.cookies.get('userInfo'))
+
+        }catch(e){}
+    }
+    next();
+})
 app.use(cookieParser());
 //静态文件的处理
 app.use('/public',express.static(__dirname+'/public'));
