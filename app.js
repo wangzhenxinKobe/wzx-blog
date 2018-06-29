@@ -13,7 +13,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var app = express();
-
+var Model = require('./models/User');
 // view engine setup
 // 定义模板引擎
 app.engine('html', swig.renderFile);
@@ -37,12 +37,21 @@ app.use(function(req, res, next) {
     req.userInfo = {};
     if(req.cookies.get('userInfo')){
         try{
-            req.userInfo = JSON.parse(req.cookies.get('userInfo'))
+            req.userInfo = JSON.parse(req.cookies.get('userInfo'));
 
-        }catch(e){}
+            //获取当前登录用户的类型，是否是管理员
+            Model.findById(req.userInfo._id).then(function(userInfo) {
+                req.userInfo.isAdmin = Boolean(userInfo.isAdmin);
+                next();
+            })
+
+        }catch(e){
+            next();
+        }
+    }else{
+        next();
     }
-    next();
-})
+});
 app.use(cookieParser());
 //静态文件的处理
 app.use('/public',express.static(__dirname+'/public'));
