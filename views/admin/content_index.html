@@ -9,7 +9,17 @@
 
 <h3>内容列表</h3>
 
-{% include 'page.html' %}
+<nav>
+    <ul class="pager">
+        <li class="previous"><a href="/admin/content?page={{page-1}}">&larr; 上一页</a></li>
+
+        <li>
+            一共有 {{count}} 条数据，每页显示 {{limit}} 条数据，一共 {{pages}} 页，当前第 {{page}} 页
+        </li>
+
+        <li class="next"><a href="/admin/content?page={{page+1}}">下一页 &rarr;</a></li>
+    </ul>
+</nav>
 
 <table class="table table-hover table-striped">
 
@@ -40,6 +50,16 @@
 
 </table>
 
-{% include 'page.html' %}
+<nav>
+    <ul class="pager">
+        <li class="previous"><a href="/admin/content?page={{page-1}}">&larr; 上一页</a></li>
+
+        <li>
+            一共有 {{count}} 条数据，每页显示 {{limit}} 条数据，一共 {{pages}} 页，当前第 {{page}} 页
+        </li>
+
+        <li class="next"><a href="/admin/content?page={{page+1}}">下一页 &rarr;</a></li>
+    </ul>
+</nav>
 
 {% endblock %}
